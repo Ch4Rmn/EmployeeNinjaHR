@@ -20,9 +20,9 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
-            $table->unsignedBigInteger('created_by')->nullable()->default(1);
-            $table->unsignedBigInteger('updated_by')->nullable()->default(1);
-            $table->unsignedBigInteger('deleted_by')->nullable()->default(1);
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
         });
     }
 

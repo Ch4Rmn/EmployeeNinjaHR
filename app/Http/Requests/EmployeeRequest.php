@@ -33,7 +33,7 @@ class EmployeeRequest extends FormRequest
                     $query->whereNull('deleted_at');
                 }),
             ],
-            'email' => 'required|email|unique:employees,email,' . $this->employee,
+            'email' => 'required|email|unique:users,email,' . $this->user,
             // 'email_verified_at' => 'nullable|date',
             'password' => $this->isMethod('post') ? 'required|string|min:8' : 'nullable|string|min:8',
             'employee_id' => 'nullable|integer',
@@ -42,15 +42,18 @@ class EmployeeRequest extends FormRequest
             'phone' => [
                 'nullable',
                 'string',
-                'unique:employees,phone,' . $this->employee,
+                'unique:users,phone,' . $this->user,
                 'regex:/^09\d{7,10}$/',
                 'max:12'
             ],
             'address' => 'nullable|string|max:255',
-            'nrc_number' => 'nullable|string|unique:employees,nrc_number,' . $this->employee,
+            'nrc_number' => 'nullable|string|unique:users,nrc_number,' . $this->user,
             'birthday' => 'nullable|date',
             'date_of_join' => 'nullable|date',
             'is_present' => 'boolean',
+            'created_by' => 'nullable|string',
+            'updated_by' => 'nullable|string',
+            'deleted_by' => 'nullable|string',
         ];
     }
 }

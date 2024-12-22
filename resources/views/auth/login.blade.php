@@ -3,8 +3,8 @@
 @section('customCss')
     <style>
         /* .apple {
-                        background-color: rgb(19, 19, 96)
-                    } */
+                                            background-color: rgb(19, 19, 96)
+                                        } */
     </style>
 @section('content')
     <div class="container">
@@ -81,6 +81,15 @@
                                 <div class="md-form mt-3">
                                     <button class="btn btn-primary btn-block" type="submit">Login</button>
                                 </div>
+                                {{--  --}}
+                                <div class="md-form mt-3">
+                                    <button class="btn bg-black text-white btn-block" type="submit" id="github-login-btn">
+                                        <a href="{{ route('login.github') }}" target="" rel="noopener noreferrer">Login
+                                            with Github</a>
+                                    </button>
+                                </div>
+
+                                {{--  --}}
                     </div>
                 </div>
 
@@ -93,6 +102,17 @@
 
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $("#github-login-btn").click(function(event) {
+                event.preventDefault(); // Prevent the default action of the button
+
+                // Additional behavior here (e.g., submit a form, log an event, etc.)
+                alert('Prevented default action and handled click event!');
+            });
+        });
+    </script>
+
 
 @section('javascript')
 @endsection

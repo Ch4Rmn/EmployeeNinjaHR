@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('linhtutkyaw'), // password
             'remember_token' => Str::random(10),
             'phone' => '09966177240',
+            'department_id' => 1
+
         ]);
 
         \App\Models\User::create([
@@ -31,8 +33,23 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('linhtutkyaw'), // password
             'remember_token' => Str::random(10),
             'phone' => '09966177241',
+            'department_id' => 1
+        ]);
+
+        \App\Models\Department::create([
+            'name' => 'Department 1',
+            'created_at' => NOW(),
+            'updated_at' => NOW(),
 
         ]);
+
+        \App\Models\Department::create([
+            'name' => 'Department 2',
+            'updated_at' => NOW(),
+            'created_at' => NOW(),
+
+        ]);
+
         \App\Models\User::factory(30)->create();
     }
 }

@@ -15,6 +15,15 @@
                 <h3>Employee Users</h3>
             </div>
             {{--  --}}
+            <div class="row my-3">
+
+                {{-- <div class="col-1"><a href="{{ route('employee.create') }}" class="btn btn-primary"><i --}}
+                <div class="col-1"><a href="{{ url('employee/create') }}" class="btn btn-primary"><i
+                            class="fa-solid fa-plus-circle ms-2"></i>Create</a>
+                </div>
+                <div class="col-1"><a href="" class="btn btn-danger">Create</a></div>
+            </div>
+
 
             {{--  --}}
             {{-- {{ $dataTable->table(['id' => 'employeeTable', 'class' => 'table table-striped table-bordered table-success']) }} --}}
@@ -22,7 +31,8 @@
                 <div class="text-start mt-2">
                     <span class=" mt-3" id="dateRange">
                         <button class="btn border p-3">
-                            <i class="fa-solid fa-calendar-days"></i>&nbsp;<span></span><i class="fa fa-caret-down ms-2"></i>
+                            <i class="fa-solid fa-calendar-days"></i>&nbsp;<span></span><i
+                                class="fa fa-caret-down ms-2"></i>
                         </button>
                     </span>
                 </div>
@@ -52,9 +62,14 @@
 @section('javascript')
     <script>
         $(document).ready(function() {
-            var start_date = moment().subtract(1, 'M').startOf('day');
-            var end_date = moment().endOf('day');
-            $('#dateRange span').html(start_date.format('MMMM D, YYYY') + '-' + end_date.format('MMMM D, YYYY'));
+            // Set default to this month
+            var start_date = moment().startOf('month'); // First day of this month
+            var end_date = moment().endOf('day'); // End of today
+
+            // Set the initial date range display
+            $('#dateRange span').html(start_date.format('MMMM D, YYYY') + ' - ' + end_date.format('MMMM D, YYYY'));
+
+            // Initialize date range picker
             $('#dateRange').daterangepicker({
                 startDate: start_date,
                 endDate: end_date,
@@ -76,6 +91,8 @@
                     'MMMM D, YYYY'));
                 table.draw();
             });
+
+            // Initialize DataTable
             var table = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -113,14 +130,15 @@
                     {
                         data: 'updated_at',
                         name: 'updated_at'
-                    }, {
+                    },
+                    {
                         data: 'is_present',
                         name: 'is_present'
-                    }, {
+                    },
+                    {
                         data: 'department_name',
                         name: 'department_name'
                     }
-
                 ],
             });
         });
