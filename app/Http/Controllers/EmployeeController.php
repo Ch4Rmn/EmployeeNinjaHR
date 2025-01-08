@@ -37,12 +37,8 @@ class EmployeeController extends Controller
     public function ssd(Request $request)
     {
         try {
-
-            // $employees = User::query();
             $employees = User::with('department');
 
-
-            // dd($employees);
             // Apply date range filter if both start_date and end_date are provided
             if ($request->filled('start_date') && $request->filled('end_date')) {
                 $employees->whereBetween('created_at', [
@@ -50,20 +46,35 @@ class EmployeeController extends Controller
                     $request->end_date,
                 ]);
             }
+
             $employees->whereNotIn('name', ['admin', 'admin2']);
-            // return
+
             return Datatables::of($employees)
                 ->addColumn('department_name', function ($each) {
                     return $each->department ? $each->department->name : 'NULL';
                 })
+                ->addColumn('action', function ($each) {
+                    $editUrl = route('employee.edit', $each->id); // Replace with your edit route
+                    $deleteUrl = route('employee.destroy', $each->id); // Replace with your delete route
+
+                    return "<div class='d-flex justify-content-around'>
+                    <a href='{$editUrl}' class='btn btn-sm btn-primary'>
+                        <i class='fas fa-edit'></i> Edit
+                    </a>
+                    <button class='btn btn-sm btn-danger delete-btn' data-id='{$each->id}'>
+                        <i class='fas fa-trash'></i> Delete
+                    </button>
+                    </div>
+                ";
+                })
                 ->editColumn('is_present', function ($each) {
                     if ($each->is_present == 1) {
-                        return "<span class='text-center shadow badge badge-success badge-pill '>Active</span>";
+                        return "<span class='text-center shadow badge badge-success badge-pill'>Active</span>";
                     } else {
-                        return "<span class='text-center shadow badge badge-danger badge-pill '>Ban</span>";
+                        return "<span class='text-center shadow badge badge-danger badge-pill'>Ban</span>";
                     }
                 })
-                ->rawColumns(['is_present'])
+                ->rawColumns(['is_present', 'action']) // Add 'action' to rawColumns
                 ->make(true);
         } catch (\Throwable $th) {
             Log::error('Error fetching employees: ' . $th->getMessage(), [
@@ -77,6 +88,7 @@ class EmployeeController extends Controller
     }
 
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -85,7 +97,7 @@ class EmployeeController extends Controller
         //
         $departments = Department::all();
         // dd($departments);
-        return view('employee.create',compact('departments'));
+        return view('employee.create', compact('departments'));
     }
 
     /**

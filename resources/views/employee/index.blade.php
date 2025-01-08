@@ -49,9 +49,9 @@
                             <th>phone</th>
                             <th>employee_id</th>
                             <th>created_at</th>
-                            <th>updated_at</th>
                             <th>is_present</th>
                             <th>department_name</th>
+                            <th>action</th>
                         </tr>
                     </thead>
             </table>
@@ -127,10 +127,10 @@
                         data: 'created_at',
                         name: 'created_at'
                     },
-                    {
-                        data: 'updated_at',
-                        name: 'updated_at'
-                    },
+                    // {
+                    //     data: 'updated_at',
+                    //     name: 'updated_at'
+                    // },
                     {
                         data: 'is_present',
                         name: 'is_present'
@@ -138,7 +138,11 @@
                     {
                         data: 'department_name',
                         name: 'department_name'
-                    }
+                    },
+                    {
+                        data: 'action',
+                        name: 'action'
+                    },
                 ],
             });
         });
