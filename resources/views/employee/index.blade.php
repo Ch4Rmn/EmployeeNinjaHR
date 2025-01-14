@@ -7,57 +7,77 @@
         /* Add custom styles here if needed */
     </style>
 @endsection
-
-@section('content')
-    <div class="container-fluid">
-        <div class="">
-            <div class="card-header text-center">
-                <h3>Employee Users</h3>
+<div class="">
+    @section('content')
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ session('success') }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            {{--  --}}
-            <div class="row my-3">
-
-                {{-- <div class="col-1"><a href="{{ route('employee.create') }}" class="btn btn-primary"><i --}}
-                <div class="col-1"><a href="{{ url('employee/create') }}" class="btn btn-primary"><i
-                            class="fa-solid fa-plus-circle ms-2"></i>Create</a>
-                </div>
-                <div class="col-1"><a href="" class="btn btn-danger">Create</a></div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ session('error') }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+        @endif
+    @endsection
+</div>
 
 
-            {{--  --}}
-            {{-- {{ $dataTable->table(['id' => 'employeeTable', 'class' => 'table table-striped table-bordered table-success']) }} --}}
-            <table class="table table-striped table-warning border p-3" id="table">
-                <div class="text-start mt-2">
-                    <span class=" mt-3" id="dateRange">
-                        <button class="btn border p-3">
-                            <i class="fa-solid fa-calendar-days"></i>&nbsp;<span></span><i
-                                class="fa fa-caret-down ms-2"></i>
-                        </button>
-                    </span>
-                </div>
-                <div class="card-body" style="">
-                    {{--  --}}
+<div class="container-fluid">
+    <div class="">
+        <div class="card-header text-center">
+            <h3>Employee Users</h3>
 
-
-                    {{-- Total - {{ count($users) }} --}}
-                    <thead class="">
-                        <tr>
-                            <th>id</th>
-                            <th>name</th>
-                            <th>email</th>
-                            <th>phone</th>
-                            <th>employee_id</th>
-                            <th>created_at</th>
-                            <th>is_present</th>
-                            <th>department_name</th>
-                            <th>action</th>
-                        </tr>
-                    </thead>
-            </table>
         </div>
+        {{--  --}}
+        <div class="row my-3">
+
+            {{-- <div class="col-1"><a href="{{ route('employee.create') }}" class="btn btn-primary"><i --}}
+            <div class="col-1"><a href="{{ url('employee/create') }}" class="btn btn-primary"><i
+                        class="fa-solid fa-plus-circle ms-2"></i>Create</a>
+            </div>
+            <div class="col-1"><a href="" class="btn btn-danger">Create</a></div>
+        </div>
+
+
+        {{--  --}}
+        {{-- {{ $dataTable->table(['id' => 'employeeTable', 'class' => 'table table-striped table-bordered table-success']) }} --}}
+        <table class="table table-striped table-warning border p-3" id="table">
+            <div class="text-start mt-2">
+                <span class=" mt-3" id="dateRange">
+                    <button class="btn border p-3">
+                        <i class="fa-solid fa-calendar-days"></i>&nbsp;<span></span><i
+                            class="fa fa-caret-down ms-2"></i>
+                    </button>
+                </span>
+            </div>
+            <div class="card-body" style="">
+                {{--  --}}
+
+
+                {{-- Total - {{ count($users) }} --}}
+                <thead class="">
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>email</th>
+                        <th>phone</th>
+                        <th>employee_id</th>
+                        <th>created_at</th>
+                        <th>is_present</th>
+                        <th>department_name</th>
+                        <th>action</th>
+                    </tr>
+                </thead>
+        </table>
     </div>
-@endsection
+</div>
 
 @section('javascript')
     <script>

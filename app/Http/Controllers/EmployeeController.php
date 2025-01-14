@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Utility;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\DataTables\UsersDataTable;
@@ -11,7 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EmployeeRequest;
-use App\Models\Department;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Http\Requests\EmployeeUpdateRequest;
 
 class EmployeeController extends Controller
 {
@@ -57,15 +59,20 @@ class EmployeeController extends Controller
                     $editUrl = route('employee.edit', $each->id); // Replace with your edit route
                     $deleteUrl = route('employee.destroy', $each->id); // Replace with your delete route
 
-                    return "<div class='d-flex justify-content-around'>
-                    <a href='{$editUrl}' class='btn btn-sm btn-primary'>
-                        <i class='fas fa-edit'></i> Edit
-                    </a>
-                    <button class='btn btn-sm btn-danger delete-btn' data-id='{$each->id}'>
-                        <i class='fas fa-trash'></i> Delete
-                    </button>
+                    return "
+                    <div class='d-flex justify-content-around'>
+                        <a href='{$editUrl}' class='btn btn-sm btn-primary' >
+                            <i class='fas fa-edit'></i> Edit
+                        </a>
+                        <form action='{$deleteUrl}' method='POST' onsubmit='return confirm(\"Are you sure you want to delete this employee?\")' style='display:inline-block;'>
+                            " . csrf_field() . "
+                            " . method_field('DELETE') . "
+                            <button type='submit' class='btn btn-sm btn-danger'>
+                                <i class='fas fa-trash'></i> Delete
+                            </button>
+                        </form>
                     </div>
-                ";
+                    ";
                 })
                 ->editColumn('is_present', function ($each) {
                     if ($each->is_present == 1) {
@@ -142,13 +149,38 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         //
+        $departments = Department::all();
+        $employee = User::with('department')->find($id);
+        if ($employee) {
+            // dd($employee);
+            return view('employee.edit', compact('employee', 'departments'));
+        } else {
+            return 'no';
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EmployeeUpdateRequest $request, string $id)
     {
+        $validator = $request->validated();
+        // dd($validator);
+        if ($validator) {
+            $employee = User::findOrFail($id);
+            $employee->update($validator);
+            // dd(true);
+            Debugbar::info($employee);
+            return redirect()->route('employee.index')->with('success', 'update success!');
+            // $employee = User::findOrFail($id);
+            // dd($employee);
+        } else {
+            dd(false);
+        }
+        // dd($request->all());
+        // $employee = User::findOrFail($id);
+        // if($employee->update())
+
         //
     }
 
@@ -157,7 +189,15 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $employee = User::findOrFail($id);
+            $employee->delete();
+            // $employee->forceDelete();
+            return redirect()->route('employee.index')->with('success', 'Employee deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error deleting employee: ' . $e->getMessage());
+            return redirect()->route('employee.index')->with('error', 'Error deleting employee.');
+        }
     }
 }
 
