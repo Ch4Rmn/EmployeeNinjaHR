@@ -1,0 +1,23 @@
+[33mcommit 64b85be409110680a8c902684f476039822ff2ed[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Ch4Rmn <linhtut123451@gmail.com>
+Date:   Tue Jan 14 11:17:07 2025 +0630
+
+    add debuggBar
+
+[33mcommit 60250c29c624ab9113394498edc9b8764a4eab13[m
+Author: Ch4Rmn <linhtut123451@gmail.com>
+Date:   Wed Jan 8 22:33:57 2025 +0630
+
+    create action and debugger install
+
+[33mcommit 4a6c1ac3f76c6d759896cd7a967c66cb6567af90[m
+Author: Ch4Rmn <linhtut123451@gmail.com>
+Date:   Sun Dec 22 23:02:43 2024 +0630
+
+    create Employee
+
+[33mcommit bee39625cc6162d2456c32f9f274dfb0ca696de6[m
+Author: Ch4Rmn <linhtut123451@gmail.com>
+Date:   Mon Dec 9 16:53:29 2024 +0630
+
+    employee list (update with Department relationship)
