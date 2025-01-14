@@ -42,27 +42,31 @@ class EmployeeController extends Controller
             $employees = User::with('department');
 
             // Apply date range filter if both start_date and end_date are provided
-            if ($request->filled('start_date') && $request->filled('end_date')) {
-                $employees->whereBetween('created_at', [
-                    $request->start_date,
-                    $request->end_date,
-                ]);
-            }
+            // if ($request->filled('start_date') && $request->filled('end_date')) {
+            //     $employees->whereBetween('created_at', [
+            //         $request->start_date,
+            //         $request->end_date,
+            //     ]);
+            // }
 
             $employees->whereNotIn('name', ['admin', 'admin2']);
 
             return Datatables::of($employees)
-                ->addColumn('department_name', function ($each) {
-                    return $each->department ? $each->department->name : 'NULL';
+                ->addColumn('department_name', function ($employee) {
+                    return $employee->department ? $employee->department->name : 'NULL';
                 })
-                ->addColumn('action', function ($each) {
-                    $editUrl = route('employee.edit', $each->id); // Replace with your edit route
-                    $deleteUrl = route('employee.destroy', $each->id); // Replace with your delete route
+                ->addColumn('action', function ($employee) {
+                    $editUrl = route('employee.edit', $employee->id); // Replace with your edit route
+                    $showUrl = route('employee.show', $employee->id);
+                    $deleteUrl = route('employee.destroy', $employee->id); // Replace with your delete route
 
                     return "
                     <div class='d-flex justify-content-around'>
                         <a href='{$editUrl}' class='btn btn-sm btn-primary' >
                             <i class='fas fa-edit'></i> Edit
+                        </a>
+                         <a href='{$showUrl}' class='btn btn-sm btn-info' >
+                            <i class='fas fa-user'></i> Show
                         </a>
                         <form action='{$deleteUrl}' method='POST' onsubmit='return confirm(\"Are you sure you want to delete this employee?\")' style='display:inline-block;'>
                             " . csrf_field() . "
@@ -74,8 +78,8 @@ class EmployeeController extends Controller
                     </div>
                     ";
                 })
-                ->editColumn('is_present', function ($each) {
-                    if ($each->is_present == 1) {
+                ->editColumn('is_present', function ($employee) {
+                    if ($employee->is_present == 1) {
                         return "<span class='text-center shadow badge badge-success badge-pill'>Active</span>";
                     } else {
                         return "<span class='text-center shadow badge badge-danger badge-pill'>Ban</span>";

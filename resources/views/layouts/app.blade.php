@@ -32,11 +32,21 @@
     <link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.5.0/css/rowReorder.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.css" />
+
+
+
+
+
 
     <!-- Scripts -->
     {{-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
     <link rel="stylesheet" href="{{ asset('style.css') }}">
+    {{-- <style>
 
+    </style> --}}
     @yield('customCss')
 </head>
 
@@ -562,6 +572,19 @@
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script> --}}
         <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+        {{--  --}}
+        <script src="https://cdn.datatables.net/rowreorder/1.5.0/js/dataTables.rowReorder.js"></script>
+        <script src="https://cdn.datatables.net/rowreorder/1.5.0/js/rowReorder.dataTables.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.dataTables.js"></script>
+
+        {{-- https://code.jquery.com/jquery-3.7.1.js
+        https://cdn.datatables.net/2.2.1/js/dataTables.js
+        https://cdn.datatables.net/rowreorder/1.5.0/js/dataTables.rowReorder.js
+        https://cdn.datatables.net/rowreorder/1.5.0/js/rowReorder.dataTables.js
+        https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js
+        https://cdn.datatables.net/responsive/3.0.3/js/responsive.dataTables.js --}}
+        {{--  --}}
 
 
         <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>

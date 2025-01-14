@@ -490,3 +490,25 @@
   .chiller-theme .sidebar-footer>a:last-child {
       border-right: none;
   }
+
+  @media screen and (max-width: 767px) {
+    div.dt-container div.dt-layout-row:not(.dt-layout-table) div.dt-layout-cell {
+        display: block;
+        text-align: left;
+    }
+}
+
+div.dt-length {
+    margin: 10px;
+}
+
+div.dt-container .dt-length,
+div.dt-container .dt-search,
+div.dt-container .dt-info,
+div.dt-container .dt-processing,
+div.dt-container .dt-paging {
+    margin-top: 3px;
+    color: inherit;
+    background-color: #e8e6e6;
+    border-radius: px;
+}

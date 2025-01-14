@@ -41,15 +41,15 @@
 
                 {{-- <div class="col-1"><a href="{{ route('employee.create') }}" class="btn btn-primary"><i --}}
                 <div class="col-1"><a href="{{ url('employee/create') }}" class="btn btn-primary"><i
-                            class="fa-solid fa-plus-circle ms-2"></i>Create</a>
+                            class="fa-solid fa-plus-circle mx-2"></i>Create</a>
                 </div>
-                <div class="col-1"><a href="" class="btn btn-danger">Create</a></div>
+                {{-- <div class="col-1"><a href="" class="btn btn-danger">Create</a></div> --}}
             </div>
 
 
             {{--  --}}
             {{-- {{ $dataTable->table(['id' => 'employeeTable', 'class' => 'table table-striped table-bordered table-success']) }} --}}
-            <table class="table table-striped table-warning border p-3" id="table">
+            <table class="table table-striped table-warning border p-3 nowrap" style="width:100%" id="table">
                 <div class="text-start mt-2">
                     <span class=" mt-3" id="dateRange">
                         <button class="btn border p-3">
@@ -85,46 +85,51 @@
     <script>
         $(document).ready(function() {
             // Set default to this month
-            var start_date = moment().startOf('month'); // First day of this month
-            var end_date = moment().endOf('day'); // End of today
+            // var start_date = moment().startOf('month'); // First day of this month
+            // var end_date = moment().endOf('day'); // End of today
 
-            // Set the initial date range display
-            $('#dateRange span').html(start_date.format('MMMM D, YYYY') + ' - ' + end_date.format('MMMM D, YYYY'));
+            // // Set the initial date range display
+            // $('#dateRange span').html(start_date.format('MMMM D, YYYY') + ' - ' + end_date.format('MMMM D, YYYY'));
 
-            // Initialize date range picker
-            $('#dateRange').daterangepicker({
-                startDate: start_date,
-                endDate: end_date,
-                ranges: {
-                    'Today': [moment().startOf('day'), moment().endOf('day')],
-                    'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days')
-                        .endOf('day')
-                    ],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                        'month').endOf('month')]
-                }
-            }, function(start, end) {
-                start_date = start;
-                end_date = end;
-                $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
-                    'MMMM D, YYYY'));
-                table.draw();
-            });
+            // // Initialize date range picker
+            // $('#dateRange').daterangepicker({
+            //     startDate: start_date,
+            //     endDate: end_date,
+            //     ranges: {
+            //         'Today': [moment().startOf('day'), moment().endOf('day')],
+            //         'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days')
+            //             .endOf('day')
+            //         ],
+            //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            //         'This Month': [moment().startOf('month'), moment().endOf('month')],
+            //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+            //             'month').endOf('month')]
+            //     }
+            // }, function(start, end) {
+            //     start_date = start;
+            //     end_date = end;
+            //     $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
+            //         'MMMM D, YYYY'));
+            //     table.draw();
+            // });
 
             // Initialize DataTable
             var table = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
                 ajax: {
+
                     url: '{!! route('ssd') !!}',
-                    data: function(d) {
-                        d.start_date = start_date.format('YYYY-MM-DD');
-                        d.end_date = end_date.format('YYYY-MM-DD');
-                    }
+                    // data: function(d) {
+                    //     d.start_date = start_date.format('YYYY-MM-DD');
+                    //     d.end_date = end_date.format('YYYY-MM-DD');
+                    // }
                 },
+                order: [
+                    [9, 'desc']
+                ],
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -165,7 +170,17 @@
                         data: 'action',
                         name: 'action'
                     },
+
                 ],
+                // processing: "<p>...Loading...</p>",
+                language: {
+                    paginate: {
+                        next: 'Next page',
+                        previous: 'Previous Page'
+                    }
+                },
+                // processing: "<img src='{{ asset('images/Ripple@1x-1.0s-200px-200px.png') }}'></img>",
+
             });
         });
     </script>
