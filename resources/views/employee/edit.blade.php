@@ -11,6 +11,7 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-header">
+                <span><a href="{{ route('employee.index') }}" class=""><i class="fa phpdebugbar-fa-arrow-alt-circle-left fs-2 mt-3 text-dark"></i></a></span>
                 <h3 class="text-center">Edit Employee</h3>
             </div>
 
@@ -61,7 +62,7 @@
                                 <option value="">Select Department</option>
                                 @foreach ($departments as $department)
                                     <option value="{{ $department->id }}"
-                                        {{ $employee->department && $employee->department->id == $department->id ? 'selected' : '' }}>
+                                        {{ $employee->department_id && $employee->department->id == $department->id ? 'selected' : '' }}>
                                         {{ $department->name }}
                                     </option>
                                 @endforeach
@@ -147,6 +148,7 @@
                         <div class="col-md-9 offset-md-3">
                             <button type="submit" class="btn btn-primary">Update</button>
                             <a href="{{ route('employee.index') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="" type="reset" class="btn btn-dark">Reset</a>
                         </div>
                     </div>
                 </form>

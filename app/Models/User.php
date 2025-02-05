@@ -37,6 +37,7 @@ class User extends Authenticatable
         'created_by',
         'updated_by',
         'deleted_by',
+        'img'
     ];
 
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->bigInteger('employee_id')->nullable();
             $table->bigInteger('department_id')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->string('img')->nullable();
             $table->string('phone')->unique()->nullable();
             $table->string('address')->nullable();
             $table->string('nrc_number')->unique()->nullable();
@@ -43,7 +44,8 @@ return new class extends Migration
                 'github_id',
                 'department_id',
                 'date_of_join',
-                'is_present'
+                'is_present',
+                'img'
             ]);
         });
     }

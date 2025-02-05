@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Utility;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -13,7 +14,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EmployeeRequest;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\EmployeeUpdateRequest;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class EmployeeController extends Controller
 {
@@ -38,8 +41,10 @@ class EmployeeController extends Controller
 
     public function ssd(Request $request)
     {
+
         try {
-            $employees = User::with('department');
+            if ($request->ajax())
+                $employees = User::with('department');
 
             // Apply date range filter if both start_date and end_date are provided
             // if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -52,6 +57,12 @@ class EmployeeController extends Controller
             $employees->whereNotIn('name', ['admin', 'admin2']);
 
             return Datatables::of($employees)
+                ->filterColumn('department_name', function ($query, $keyword) {
+                    $query->whereHas('department', function ($query) use ($keyword) {
+                        $query->where('name', 'like', '%' . $keyword . '%');
+                    });
+                    // $query->where('name','like','%'.$keyword.'%');
+                })
                 ->addColumn('department_name', function ($employee) {
                     return $employee->department ? $employee->department->name : 'NULL';
                 })
@@ -84,8 +95,20 @@ class EmployeeController extends Controller
                     } else {
                         return "<span class='text-center shadow badge badge-danger badge-pill'>Ban</span>";
                     }
+                })->editColumn('created_at', function ($employee) {
+                    return $employee->created_at->format('Y-m-d h:i:s');
+                    // return $employee->created_at->diffForHumans();
+                    // return Carbon::parse($employee->created_at)->format('Y-m-d h:i:s');
                 })
-                ->rawColumns(['is_present', 'action']) // Add 'action' to rawColumns
+                ->editColumn('updated_at', function ($employee) {
+                    return $employee->updated_at->format('Y-m-d h:i:s');
+                })->editColumn('img', function ($employee) {
+                    // return "<img href='{{ asset('storage/employee/' . $employee->id . '/' . $employee->img) }}' class='img-thumbnail'></img>";
+                    return "<img src='" . asset('storage/employee/' . $employee->id . '/' . $employee->img) . "' class='img-thumbnail' alt='No Image'>";
+
+                    // {{ asset('storage/employee/' . $employee->id . '/' . $employee->img) }}
+                })
+                ->rawColumns(['is_present', 'action', 'updated_at', 'created_at', 'img']) // Add 'action' to rawColumns
                 ->make(true);
         } catch (\Throwable $th) {
             Log::error('Error fetching employees: ' . $th->getMessage(), [
@@ -97,6 +120,7 @@ class EmployeeController extends Controller
             ], 500);
         }
     }
+
 
 
 
@@ -116,35 +140,119 @@ class EmployeeController extends Controller
      */
     public function store(EmployeeRequest $request)
     {
-        DB::connection()->enableQueryLog();
-        $user_id = Auth::user()->id;
-        $user_name = Auth::user()->name;
-        $validator = $request->validated();
-        $validator['github_id'] = $user_id;
-        $validator['employee_id'] = $user_id;
-        $validator['created_by'] = $user_name;
-        $validator['updated_by'] = $user_name;
-        $validator['deleted_by'] = $user_name;
-        // dd($validator);
-        $employee = User::create($validator);
-        $queryLog = DB::getQueryLog();
-        // dd($queryLog);
-        Utility::saveDebugLog("EmployeeController::store", $queryLog);
-        // dd($employee);
-        if ($employee) {
-            return view('employee.index');
-        } else {
-            return back();
+        // Check if the request contains a file
+        if ($request->hasFile('img')) {
+            $file = $request->file('img');
+            // $fileName = uniqid() . '-' . time() . '.' . $file->getClientOriginalExtension();
+            // $fileName = uniqid() . '-' . time() . '.' . $file->getClientOriginalName();
+            $fileName = uniqid() . '-' . date('Y-m-d_H-i-s') . '.' . $file->getClientOriginalName();
+
+
+            // Enable query logging for debugging
+            DB::connection()->enableQueryLog();
+
+            // Retrieve authenticated user details
+            $user_id = Auth::id();
+            $user_name = Auth::user()->name;
+
+            // Validate request data
+            $validatedData = $request->validated();
+
+            // Add additional fields
+            $validatedData['created_by'] = $user_id;
+            $validatedData['updated_by'] = $user_id;
+            $validatedData['img'] = $fileName;
+
+            // Create employee record
+            $employee = User::create($validatedData);
+
+            if ($employee->img) {
+                // Generate directory path
+                $dir = 'public/employee/' . $employee->id . '/';
+                $path = 'employee/' . $employee->id . '/';
+
+                // Ensure the directory exists
+                if (!Storage::exists($dir)) {
+                    Storage::makeDirectory($dir, 0755, true);
+                }
+
+                // Store the file in the directory
+                $file->storeAs($path, $fileName, 'public');
+
+                // Update the employee record with the file name and employee ID
+                $employee->img = $fileName;
+                $employee->employee_id = $employee->id;
+                $employee->save();
+
+                // Save debug logs
+                $queryLog = DB::getQueryLog();
+                Utility::saveDebugLog("EmployeeController::store", $queryLog);
+
+                // Redirect with success message
+                return redirect()->route('employee.index')->with('success', 'Employee Created!');
+            }
         }
-        // dd($request->all());
+
+        // Handle case where no file is uploaded
+        return back()->withErrors('Please upload a valid image.');
     }
+
+    // public function store(EmployeeRequest $request)
+    // {
+    //     // dd($request->all());
+    //     if ($request->hasFile('img')) {
+    //         $file = $request->file('img');
+    //         $fileName = uniqid() . '-' . time() . '.' . $file->getClientOriginalName();
+    //         DB::connection()->enableQueryLog();
+    //         $user_id = Auth::user()->id;
+    //         $user_name = Auth::user()->name;
+    //         $validator = $request->validated();
+    //         // $validator['github_id'] = $user_id;
+    //         // $validator['employee_id'] = $user_id;
+    //         $validator['created_by'] = $user_id;
+    //         $validator['updated_by'] = $user_id;
+    //         $validator['deleted_by'] = $user_id;
+    //         $validator['img'] = $fileName;
+    //         // dd($request->img);
+    //         // dd($validator);
+    //         $employee = User::create($validator);
+    //         if ($employee) {
+    //             $employee_id = $employee->id;
+    //             $path = '/employee/' . $employee_id . '/';
+    //             if (!Storage::exists($path)) {
+    //                 Storage::makeDirectory($path, 0755, true);
+    //             } else {
+    //                 $img = $request->file('img')->storeAs($path, $fileName);
+    //             }
+    //             $employee->img = $fileName = uniqid() . '-' . time() . '.' . $file->getClientOriginalName();
+    //             $employee->employee_id = $employee_id;
+    //             $employee->save();
+    //         }
+    //         $queryLog = DB::getQueryLog();
+    //         // dd($queryLog);
+    //         Utility::saveDebugLog("EmployeeController::store", $queryLog);
+    //         // dd($employee);
+    //         if ($employee) {
+    //             return view('employee.index')->with('success', 'Employee Created!');
+    //         } else {
+    //             return back();
+    //         }
+    //     }
+    // }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user, Request $request, $id)
     {
-        //
+        $departments = Department::all();
+        $employee = User::with('department')->find($id);
+        if ($employee) {
+            // dd($employee);
+            return view('employee.show', compact('employee', 'departments'));
+        } else {
+            return 'no';
+        }
     }
 
     /**

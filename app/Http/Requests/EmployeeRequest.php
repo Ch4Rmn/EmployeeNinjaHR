@@ -16,7 +16,7 @@ class EmployeeRequest extends FormRequest
         return true;
     }
 
-    /**
+    /**z
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -54,6 +54,7 @@ class EmployeeRequest extends FormRequest
             'created_by' => 'nullable|string',
             'updated_by' => 'nullable|string',
             'deleted_by' => 'nullable|string',
+            'img' => 'required|file|mimes:png,jpg,gif,zip|max:2048',
         ];
     }
 }

@@ -12,9 +12,18 @@
 
     {{--  --}}
     <div class="container mt-5">
+
         <div class="card">
             <div class="card-header">
-                <h3 class="text-center">Employee Create</h3>
+                <div>
+                    <a class="text-start" style="cursor: pointer" id="back">
+                        <i class="fa-solid fa-circle-arrow-left fs-2 text-dark d-inline" style="margin-top: 20px;"></i>
+                    </a>
+
+                    <h3 class="text-center">Employee Create</h3>
+                </div>
+
+
             </div>
             {{--  --}}
             @if ($errors->any())
@@ -28,7 +37,7 @@
             @endif
             {{--  --}}
             <div class="card-body">
-                <form action="{{ route('employee.store') }}" method="POST">
+                <form action="{{ route('employee.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Name -->
@@ -117,6 +126,17 @@
                         </div>
                     </div>
 
+                    {{-- img --}}
+                    <div class="row mb-3">
+                        <label for="img" class="col-md-3 col-form-label text-md-end">Image</label>
+                        <div class="col-md-9">
+                            <input type="file" name="img" id="img" accept="image/png, image/jpeg, image/gif" />
+                            <div id="filePreview"></div>
+                            <div id="errorMessage" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+
+
                     <!-- NRC Number -->
                     <div class="row mb-3">
                         <label for="nrc_number" class="col-md-3 col-form-label text-md-end">NRC Number</label>
@@ -193,9 +213,60 @@
 
     </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('img');
+        const filePreview = document.getElementById('filePreview');
+        const errorMessage = document.getElementById('errorMessage');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0]; // User ရဲ့ file
+            filePreview.innerHTML = ''; // Preview ရှင်းမယ်
+            errorMessage.style.display = 'none';
+
+            if (file) {
+                // File type စစ်ဆေး
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+                if (allowedTypes.includes(file.type)) {
+                    // File Preview ပြပေး
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '200px';
+                        img.style.maxHeight = '200px';
+                        filePreview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // အတည်ပြုထားတဲ့ file မဟုတ်ရင် reject လုပ်
+                    errorMessage.textContent = 'ခွင့်ပြုထားတဲ့ file type (png, jpg, gif) မဟုတ်ပါ။';
+                    errorMessage.style.display = 'block';
+                    this.value = ''; // File ကို clear လုပ်
+                }
+            }
+        });
+    });
+</script>
 
 @section('javascript')
     <script>
-        $(document).ready(function() {})
+        //        $(document).ready(function () {
+        //     $('#birthday').daterangepicker({
+        //         timePicker: false,
+        //         autoApply: true,
+        //         singleDatePicker: true,
+        //         showDropdowns: true,
+        //         minYear: 1901,
+        //         maxYear: parseInt(moment().format('YYYY'), 10),
+        //         locale: {
+        //             format: 'YYYY-MM-DD' // Ensure the format matches your backend requirements
+        //         }
+        //     },
+        //      function (start, end, label) {
+        //         var years = moment().diff(start, 'years');
+        //         console.log("Selected date: " + start.format('YYYY-MM-DD'));
+        //     });
+        // });
     </script>
 @endsection

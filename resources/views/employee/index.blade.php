@@ -10,14 +10,14 @@
 
 @section('content')
     <div class="">
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>{{ session('success') }}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        @endif
+        @endif --}}
         @if (session('error'))
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>{{ session('error') }}</strong>
@@ -66,11 +66,13 @@
                     <thead class="">
                         <tr>
                             <th>id</th>
+                            <th class="" style="cursor: pointer">img</th>
                             <th>name</th>
                             <th>email</th>
                             <th>phone</th>
                             <th>employee_id</th>
                             <th>created_at</th>
+                            <th>updated_at</th>
                             <th>is_present</th>
                             <th>department_name</th>
                             <th>action</th>
@@ -84,6 +86,18 @@
 @section('javascript')
     <script>
         $(document).ready(function() {
+
+            //
+            @if (session('success'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('success') }}',
+                    icon: 'success',
+                    confirmButtonText: 'Cool'
+                })
+            @else
+            @endif
+
             // Set default to this month
             // var start_date = moment().startOf('month'); // First day of this month
             // var end_date = moment().endOf('day'); // End of today
@@ -113,14 +127,18 @@
             //         'MMMM D, YYYY'));
             //     table.draw();
             // });
+            $.fn.dataTable.ext.buttons.refresh = {
+                text: 'Refresh',
+                action: function(e, dt, node, config) {
+                    dt.clear().draw();
+                    dt.ajax.reload(null, false); // Reloads data without resetting pagination
+                }
+            };
 
             // Initialize DataTable
             var table = $('#table').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
+                // responsive: true,
                 ajax: {
-
                     url: '{!! route('ssd') !!}',
                     // data: function(d) {
                     //     d.start_date = start_date.format('YYYY-MM-DD');
@@ -128,11 +146,33 @@
                     // }
                 },
                 order: [
-                    [9, 'desc']
+                    // sorting array -> array start 0
+                    [0, 'desc']
                 ],
+                // dom: 'Bfrtip',
+
+                layout: {
+                    topStart: {
+                        buttons: ['copy',
+                            'csv',
+                            'excel',
+                            'pdf',
+                            'print',
+                            'colvis', // Show/hide columns
+                            'pageLength', // Change page length
+                            'selectAll', // Select all rows
+                            'selectNone', // Deselect all rows
+                            'refresh'
+                        ]
+                    }
+                },
                 columns: [{
                         data: 'id',
                         name: 'id'
+                    },
+                    {
+                        data: 'img',
+                        name: 'img'
                     },
                     {
                         data: 'name',
@@ -154,10 +194,10 @@
                         data: 'created_at',
                         name: 'created_at'
                     },
-                    // {
-                    //     data: 'updated_at',
-                    //     name: 'updated_at'
-                    // },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at'
+                    },
                     {
                         data: 'is_present',
                         name: 'is_present'
@@ -172,13 +212,14 @@
                     },
 
                 ],
+                columnDefs: [{
+                    target: 6,
+                    visible: false,
+                    searchable: false
+                }],
+
                 // processing: "<p>...Loading...</p>",
-                language: {
-                    paginate: {
-                        next: 'Next page',
-                        previous: 'Previous Page'
-                    }
-                },
+
                 // processing: "<img src='{{ asset('images/Ripple@1x-1.0s-200px-200px.png') }}'></img>",
 
             });

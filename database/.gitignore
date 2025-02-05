@@ -1,1 +1,3 @@
 *.sqlite*
+/resources/views/vendor/
+/public/vendor/

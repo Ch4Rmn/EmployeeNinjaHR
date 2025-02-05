@@ -35,12 +35,11 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.5.0/css/rowReorder.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.1/css/buttons.dataTables.css">
 
-
-
-
-
-
+    {{-- https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js --}}
     <!-- Scripts -->
     {{-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
     <link rel="stylesheet" href="{{ asset('style.css') }}">
@@ -419,11 +418,11 @@
                     <section class="">
                         <div class="row d-flex justify-content-center">
                             <div class="col-lg-6">
-                                <div class="ratio ratio-16x9">
+                                {{-- <div class="ratio ratio-16x9">
                                     <iframe class="shadow-1-strong rounded"
                                         src="https://www.youtube.com/embed/vlDzYIIOYmM" title="YouTube video"
                                         allowfullscreen></iframe>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </section>
@@ -577,6 +576,28 @@
         <script src="https://cdn.datatables.net/rowreorder/1.5.0/js/rowReorder.dataTables.js"></script>
         <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
         <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.dataTables.js"></script>
+        {{-- markjs --}}
+        <script src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
+        <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js)"></script>
+        <script src="https://cdn.datatables.net/buttons/3.2.1/js/dataTables.buttons.js
+                                        "></script>
+        <script src="https://cdn.datatables.net/buttons/3.2.1/js/buttons.dataTables.js
+                                        "></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
+                                        "></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js
+                                        "></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js
+                                        "></script>
+        <script src="https://cdn.datatables.net/buttons/3.2.1/js/buttons.html5.min.js
+                                        "></script>
+        <script src="https://cdn.datatables.net/buttons/3.2.1/js/buttons.print.min.js
+                                        "></script>
+
+        {{--
+        https://code.jquery.com/jquery-3.7.1.js
+https://cdn.datatables.net/2.2.1/js/dataTables.js
+ --}}
 
         {{-- https://code.jquery.com/jquery-3.7.1.js
         https://cdn.datatables.net/2.2.1/js/dataTables.js
@@ -586,6 +607,7 @@
         https://cdn.datatables.net/responsive/3.0.3/js/responsive.dataTables.js --}}
         {{--  --}}
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -598,10 +620,20 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
         </script>
+
+        <!-- Laravel Javascript Validation -->
+        {{-- <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script> --}}
         <script>
+            $(document).ready(function() {
+                $('#back').on('click', function(e) {
+                    e.preventDefault();
+                    window.history.back();
+                });
+            });
             document.querySelector('a[href="{{ route('home') }}"]').addEventListener('click', function(event) {
                 event.preventDefault();
             });
+
             // all a
             // document.querySelectorAll('a').forEach(function(anchor) {
             //     anchor.addEventListener('click', function(event) {
@@ -634,6 +666,20 @@
                     // Show with fade-in effect
                     $(".page-wrapper").addClass("toggled");
                 });
+            });
+
+            $.extend(true, $.fn.dataTable.defaults, {
+                mark: true,
+                processing: true,
+                // mark: true,
+                serverSide: true,
+                responsive: true,
+                language: {
+                    paginate: {
+                        next: 'Next page',
+                        previous: 'Previous Page'
+                    }
+                },
             });
 
 
